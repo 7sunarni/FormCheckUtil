@@ -41,7 +41,7 @@ public class RangeCheckTest {
     @Test
     public void test_4_range() {
         RangeCheck rangeCheck = new RangeCheck();
-        int[][] array = {{1, 3}, {5, 7}, {6, 11}, {13, 15}};
+        int[][] array = {{1, 7}, {5, 29}, {15, 45}, {60, 90}};
         rangeCheck.validate(array);
     }
 

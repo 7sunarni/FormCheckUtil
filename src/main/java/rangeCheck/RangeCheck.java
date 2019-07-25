@@ -1,5 +1,7 @@
 package rangeCheck;
 
+import java.util.Arrays;
+
 /**
  * Model:
  * Description:
@@ -33,13 +35,13 @@ public class RangeCheck {
                 return false;
             }
             if (axis[r[0]] != 0) {
-                System.out.println("head error" + range);
+                System.out.println("head error" + Arrays.toString(r));
                 return false;
             }
             axis[r[0]] = 1;
 
             if (axis[r[1]] != 0) {
-                System.out.println("tail error" + range);
+                System.out.println("tail error" + Arrays.toString(r));
                 return false;
             }
             axis[r[1]] = 2;
@@ -55,11 +57,11 @@ public class RangeCheck {
         int beforeCursor = -1;
 
         while (count <= element) {
-            count++;
             cursor++;
             if (axis[cursor] == 0) {
                 continue;
             }
+            count++;
 
             if (beforeCursor != -1 && axis[beforeCursor] == axis[cursor]) {
                 System.out.println("conflict " + beforeCursor + " " + cursor);
