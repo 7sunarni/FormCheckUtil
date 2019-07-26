@@ -20,7 +20,7 @@ public @interface FormField {
 
     int respCode() default 201;
 
-    float[] checkRange() default {};
+    float[] checkRange() default {-Float.MAX_VALUE, Float.MAX_VALUE};
 
     int checkLength() default Integer.MAX_VALUE;
 

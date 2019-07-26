@@ -3,6 +3,9 @@ package parser;
 
 import annotation.FormField;
 import annotation.FormType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import response.FormCheckResp;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -18,7 +21,9 @@ public class FormParser {
     private Class clazz;
     private Object object;
 
-    public void fromValidate(Object o) {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public void formValidate(Object o) {
         this.object = o;
         clazz = o.getClass();
 
@@ -32,7 +37,8 @@ public class FormParser {
                 continue;
             }
             FormFieldParser parser = new FormFieldParser(this.object, field);
-            parser.validate();
+            FormCheckResp validate = parser.validate();
+            System.out.println(validate.toString());
         }
     }
 

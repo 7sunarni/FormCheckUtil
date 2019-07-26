@@ -2,6 +2,9 @@ package parser;
 
 
 import annotation.FormField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import response.FormCheckResp;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +17,8 @@ import java.lang.reflect.Method;
  * created: 2019/7/23
  */
 public class FormFieldParser {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String RESP_NAME = "respName";
     private static final String RESP_CODE = "respCode";
@@ -104,28 +109,41 @@ public class FormFieldParser {
         }
     }
 
-    private void validateLength() {
+    private FormCheckResp validateLength() {
         if (_fieldValue.toString().length() > _length) {
-            System.out.println(this._name + "length over");
+            return new FormCheckResp(this._code, this._name + "超出最大长度，限制" + _length);
         } else {
-            System.out.println(this._name + "length satisfy");
+            return new FormCheckResp(200, "OK");
         }
     }
 
-    private void validateRange() {
+    private FormCheckResp validateRange() {
         if (_range.length < 2) {
-            return;
+            return new FormCheckResp(200, "范围注解长度错误");
         }
-        Double doubleValue = Double.valueOf(_fieldValue.toString());
+        Double doubleValue;
+        try {
+            doubleValue = Double.valueOf(_fieldValue.toString());
+        } catch (Exception e) {
+            doubleValue = new Double(0);
+//            return new FormCheckResp(200, this._name + "不能转换成数字类型");
+        }
+
         if (doubleValue < _range[0] || doubleValue > _range[1]) {
-            System.out.println(this._name + "range over");
+            return new FormCheckResp(this._code, this._name + "范围限制在" + _range[0] + "到" + _range[1] + "之间");
         } else {
-            System.out.println(this._name + "range satisfy");
+            return new FormCheckResp(200, "OK");
         }
     }
 
-    public void validate() {
-        validateLength();
-        validateRange();
+    public FormCheckResp validate() {
+        if (_fieldValue == null) {
+            return new FormCheckResp(200, this._name + "为空");
+        }
+        FormCheckResp formCheckResp = validateLength();
+        if (formCheckResp.getCode() != 200) {
+            return formCheckResp;
+        }
+        return validateRange();
     }
 }
