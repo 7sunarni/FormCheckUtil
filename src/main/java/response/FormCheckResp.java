@@ -7,6 +7,11 @@ package response;
  * created: 2019/7/26
  */
 public class FormCheckResp {
+
+    public final static String LENGTH_OVERFLOW = "%s超出最大长度，限制%s字符";
+    public final static String ANNOTATION_ERROR = "范围注解长度错误";
+    public final static String RANGE_OVERFLOW = "%s范围限制在%s到%s之间";
+
     private int code;
     private String desc;
 

@@ -10,6 +10,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static response.FormCheckResp.LENGTH_OVERFLOW;
+import static response.FormCheckResp.RANGE_OVERFLOW;
+
 /**
  * Model:
  * Description:
@@ -18,7 +21,7 @@ import java.lang.reflect.Method;
  */
 public class FormFieldParser {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(FormFieldParser.class);
 
     private static final String RESP_NAME = "respName";
     private static final String RESP_CODE = "respCode";
@@ -53,7 +56,7 @@ public class FormFieldParser {
             Method annotationMethod = FormField.class.getMethod(RESP_NAME);
             String annotationName = (String) annotationMethod.invoke(annotation);
             if (annotationName.equals("")) {
-                annotationName = this.field.toString();
+                annotationName = this.field.getName();
             }
             this._name = annotationName;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -111,7 +114,7 @@ public class FormFieldParser {
 
     private FormCheckResp validateLength() {
         if (_fieldValue.toString().length() > _length) {
-            return new FormCheckResp(this._code, this._name + "超出最大长度，限制" + _length);
+            return new FormCheckResp(this._code, String.format(LENGTH_OVERFLOW, this._name, this._length));
         } else {
             return new FormCheckResp(200, "OK");
         }
@@ -119,18 +122,17 @@ public class FormFieldParser {
 
     private FormCheckResp validateRange() {
         if (_range.length < 2) {
-            return new FormCheckResp(200, "范围注解长度错误");
+            return new FormCheckResp(200, FormCheckResp.ANNOTATION_ERROR);
         }
         Double doubleValue;
         try {
             doubleValue = Double.valueOf(_fieldValue.toString());
         } catch (Exception e) {
             doubleValue = new Double(0);
-//            return new FormCheckResp(200, this._name + "不能转换成数字类型");
         }
 
         if (doubleValue < _range[0] || doubleValue > _range[1]) {
-            return new FormCheckResp(this._code, this._name + "范围限制在" + _range[0] + "到" + _range[1] + "之间");
+            return new FormCheckResp(this._code, String.format(RANGE_OVERFLOW, this._name, _range[0], _range[1]));
         } else {
             return new FormCheckResp(200, "OK");
         }

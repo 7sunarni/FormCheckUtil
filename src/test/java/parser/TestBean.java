@@ -17,7 +17,7 @@ public class TestBean {
     @FormField(checkLength = 20, respCode = 201001, respName = "描述")
     private String desc;
 
-    @FormField(checkLength = 10, checkRange = {10, 1000000}, respCode = 201001, respName = "体重")
+    @FormField(checkLength = 10, checkRange = {10, 1000000}, respCode = 201001)
     private BigDecimal weight;
 
     public String getDesc() {
